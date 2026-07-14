@@ -1,0 +1,171 @@
+/* Receipt Page Styles & Print Optimization (Lumina Bite) */
+
+:root {
+  --receipt-width: 320px;
+}
+
+body {
+  background-color: #f1f5f9;
+  font-family: 'Courier New', Courier, monospace;
+  color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.receipt-container {
+  background: white;
+  width: var(--receipt-width);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border: 1px solid #cbd5e1;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.receipt-logo {
+  font-family: 'Outfit', 'Kanit', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.receipt-info {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #475569;
+}
+
+.divider {
+  border-top: 1px dashed #64748b;
+  margin: 14px 0;
+}
+
+.receipt-meta {
+  font-size: 11px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.receipt-meta-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.receipt-items {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin: 10px 0;
+}
+
+.receipt-items th {
+  text-align: left;
+  border-bottom: 1px dashed #64748b;
+  padding-bottom: 6px;
+  font-weight: bold;
+}
+
+.receipt-items td {
+  padding: 6px 0;
+  vertical-align: top;
+}
+
+.receipt-items tr.item-notes td {
+  padding-top: 0;
+  padding-bottom: 8px;
+  color: #475569;
+  font-style: italic;
+  font-size: 10px;
+}
+
+.receipt-totals {
+  font-size: 11px;
+  margin-top: 10px;
+}
+
+.totals-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.totals-row.grand-total {
+  font-size: 13px;
+  font-weight: bold;
+  border-top: 1px dashed #64748b;
+  border-bottom: 1px dashed #64748b;
+  padding: 8px 0;
+  margin-top: 6px;
+}
+
+.receipt-footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Actions panel for PDF and Print controls */
+.receipt-actions {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 100;
+}
+
+.btn-print {
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.btn-print:hover {
+  background: #334155;
+  transform: translateY(-2px) translateX(-50%); /* handles transform adjustment */
+}
+
+/* Fixed transform for hover animation */
+.receipt-actions:hover .btn-print {
+  transform: translateY(-2px);
+}
+
+/* Print Overrides */
+@media print {
+  body {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+  }
+  .receipt-container {
+    border: none;
+    box-shadow: none;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+  .receipt-actions {
+    display: none;
+  }
+}
