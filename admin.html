@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบจัดการหลังร้าน - Lumina Bite</title>
+  
+  <!-- Icons & CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+  
+  <!-- Supabase & ChartJS CDN (for analytics) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="admin-body">
+
+  <!-- 1. EMPLOYEE LOGIN VIEW -->
+  <div class="login-wrapper" id="login-wrapper">
+    <div class="login-card fade-in">
+      <a href="index.html" class="login-logo">
+        <i class="fas fa-utensils"></i> Lumina<span>Bite</span>
+      </a>
+      <p class="login-subtitle">ระบบล็อกอินสำหรับพนักงานจัดการร้าน</p>
+      
+      <div class="login-error" id="login-error">ข้อผิดพลาด</div>
+      
+      <form id="login-form">
+        <div class="form-group" style="text-align: left;">
+          <label for="username">ชื่อผู้ใช้ (Username)</label>
+          <input type="text" id="username" placeholder="เช่น admin, cashier, kitchen" required>
+        </div>
+        <div class="form-group" style="text-align: left;">
+          <label for="password">รหัสผ่าน (Password)</label>
+          <input type="password" id="password" placeholder="ใส่รหัสผ่าน (เช่น 123)" required>
+        </div>
+        
+        <button type="submit" class="btn-checkout" style="width: 100%; margin-top: 24px;">
+          เข้าสู่ระบบ
+        </button>
+      </form>
+      
+      <p style="font-size: 11px; color: var(--text-light); margin-top: 24px; text-align: left; background: var(--bg-main); padding: 12px; border-radius: var(--radius-sm); line-height: 1.4;">
+        💡 <strong>บัญชีทดสอบที่ใช้งานได้ (เมื่อรันแบบ Local):</strong><br>
+        • ผู้จัดการ: username = <b>admin</b> | password = <b>123</b><br>
+        • แคชเชียร์: username = <b>cashier</b> | password = <b>123</b><br>
+        • ในครัว: username = <b>kitchen</b> | password = <b>123</b>
+      </p>
+    </div>
+  </div>
+
+  <!-- 2. MAIN ADMIN LAYOUT (Hidden initially) -->
+  <div class="admin-layout" id="admin-layout" style="display: none;">
+    
+    <!-- Left Sidebar -->
+    <aside class="admin-sidebar">
+      <ul class="sidebar-menu">
+        <li>
+          <a class="sidebar-link active" data-section="dashboard">
+            <i class="fas fa-chart-line"></i> ภาพรวมยอดขาย
+          </a>
+        </li>
+        <li>
+          <a class="sidebar-link" data-section="queue">
+            <i class="fas fa-clock-rotate-left"></i> คิวสั่งอาหาร
+          </a>
+        </li>
+        <li>
+          <a class="sidebar-link" data-section="menu">
+            <i class="fas fa-hamburger"></i> จัดการเมนูอาหาร
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Staff profile card inside sidebar -->
+      <div class="staff-info-box">
+        <div style="font-size: 11px; color: var(--text-muted);">ล็อกอินในชื่อ:</div>
+        <div class="staff-name" id="sidebar-staff-name">...</div>
+        <span class="staff-role" id="sidebar-staff-role">...</span>
+        <button class="btn-logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
+      </div>
+    </aside>
+
+    <!-- Right Side Content Area -->
+    <main class="admin-content">
+      
+      <!-- HEADER -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1.5px solid var(--border); padding-bottom: 16px;">
+        <h1 style="font-size: 28px;">ระบบจัดการหลังร้าน (Lumina Bite)</h1>
+        <a href="index.html" class="btn-secondary-outline"><i class="fas fa-eye"></i> ดูหน้าร้านค้า</a>
+      </div>
+
+      <!-- SECTION A: ANALYTICS DASHBOARD -->
+      <section class="admin-section active" id="dashboard-section">
+        <div class="dashboard-grid">
+          
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>ยอดขายวันนี้</h3>
+              <div class="metric-value" id="metric-rev-value">0 ฿</div>
+            </div>
+            <div class="metric-icon green"><i class="fas fa-sack-dollar"></i></div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>ออร์เดอร์ที่สำเร็จ</h3>
+              <div class="metric-value" id="metric-count-value">0 ออเดอร์</div>
+            </div>
+            <div class="metric-icon blue"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>ค่าเฉลี่ยต่อบิล</h3>
+              <div class="metric-value" id="metric-avg-value">0 ฿</div>
+            </div>
+            <div class="metric-icon purple"><i class="fas fa-receipt"></i></div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-info">
+              <h3>ออร์เดอร์กำลังรอดำเนินการ</h3>
+              <div class="metric-value" id="metric-active-value">0 ออเดอร์</div>
+            </div>
+            <div class="metric-icon orange"><i class="fas fa-fire-burner"></i></div>
+          </div>
+          
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3 class="chart-title">สถิติยอดขายในรอบสัปดาห์</h3>
+            <canvas id="salesChart" height="120"></canvas>
+          </div>
+          
+          <div class="chart-card">
+            <h3 class="chart-title">สัดส่วนหมวดหมู่ที่สั่งซื้อ</h3>
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION B: ORDER QUEUE -->
+      <section class="admin-section" id="queue-section">
+        <div class="queue-tabs">
+          <button class="queue-tab active" data-tab="pending">รออนุมัติ/รอปรุง <span class="count" id="badge-pending">0</span></button>
+          <button class="queue-tab" data-tab="preparing">กำลังปรุงอาหาร <span class="count" id="badge-preparing">0</span></button>
+          <button class="queue-tab" data-tab="ready">พร้อมเสิร์ฟ <span class="count" id="badge-ready">0</span></button>
+          <button class="queue-tab" data-tab="history">ประวัติทั้งหมด <span class="count" id="badge-history">0</span></button>
+        </div>
+
+        <div class="queue-grid" id="queue-grid">
+          <!-- Dynamic order cards here -->
+        </div>
+      </section>
+
+      <!-- SECTION C: MENU MANAGEMENT -->
+      <section class="admin-section" id="menu-section">
+        <div class="menu-controls">
+          <h2 style="font-size: 20px;">รายการเมนูอาหารทั้งหมดในร้าน</h2>
+          <button class="btn-primary" id="add-menu-btn">
+            <i class="fas fa-plus"></i> เพิ่มเมนูใหม่
+          </button>
+        </div>
+
+        <div class="admin-menu-grid" id="admin-menu-grid">
+          <!-- Dynamic admin menu cards here -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MENU ITEM FORM DIALOG MODAL -->
+  <div class="modal" id="menu-modal">
+    <div class="modal-content" style="max-width: 550px;">
+      <div class="modal-body">
+        <h2 id="menu-modal-title" style="margin-bottom: 20px;">เพิ่มเมนูอาหาร</h2>
+        
+        <form id="menu-form">
+          <input type="hidden" id="menu-id">
+          
+          <div class="form-group">
+            <label for="menu-name">ชื่อเมนูอาหาร *</label>
+            <input type="text" id="menu-name" placeholder="ระบุชื่อเมนู เช่น ผัดซีอิ๊วหมู" required>
+          </div>
+
+          <div class="form-group">
+            <label for="menu-description">คำอธิบายรายละเอียดเมนู</label>
+            <input type="text" id="menu-description" placeholder="ระบุรายละเอียดสั้นๆ เช่น เส้นใหญ่นุ่มๆ หอมกระทะ">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="menu-price">ราคาอาหาร (บาท) *</label>
+              <input type="number" id="menu-price" min="0" placeholder="เช่น 60" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="menu-category">หมวดหมู่ *</label>
+              <select id="menu-category" required>
+                <option value="main">อาหารจานหลัก</option>
+                <option value="appetizer">ทานเล่น</option>
+                <option value="dessert">ของหวาน</option>
+                <option value="beverage">เครื่องดื่ม</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="menu-image-url">ลิงก์ที่อยู่รูปภาพอาหาร (Image URL)</label>
+            <input type="text" id="menu-image-url" placeholder="เช่น https://images.unsplash.com/...">
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 16px;">
+            <input type="checkbox" id="menu-available" style="width: auto;" checked>
+            <label for="menu-available" style="margin-bottom: 0; cursor: pointer;">เมนูนี้พร้อมเสิร์ฟในตอนนี้ (Available)</label>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end;">
+            <button type="submit" class="btn-checkout" style="margin-top: 0; padding: 10px 24px;">บันทึกเมนู</button>
+            <button type="button" class="btn-secondary-outline" id="menu-modal-close" style="border: none;">ยกเลิก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script Modules -->
+  <script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>

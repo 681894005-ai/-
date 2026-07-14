@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ใบเสร็จรับเงิน - Lumina Bite</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/print-receipt.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- Thermal Receipt Structure -->
+  <div class="receipt-container fade-in">
+    
+    <div class="receipt-header">
+      <div class="receipt-logo"><i class="fas fa-utensils"></i> Lumina Bite</div>
+      <div class="receipt-info">
+        123/45 ถนนราชดำเนิน แขวงพระนคร เขตพระนคร กรุงเทพฯ<br>
+        โทร: 02-123-4567<br>
+        เลขประจำตัวผู้เสียภาษี: 0105565000999
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="receipt-meta">
+      <div class="receipt-meta-row">
+        <span>เลขที่ใบเสร็จ:</span>
+        <span id="receipt-order-id" style="font-weight: bold;">ORD-XXXXXX</span>
+      </div>
+      <div class="receipt-meta-row">
+        <span>วันที่สั่งซื้อ:</span>
+        <span id="receipt-date">--/--/---- --:--</span>
+      </div>
+      <div class="receipt-meta-row">
+        <span>โต๊ะ / การจัดส่ง:</span>
+        <span id="receipt-table" style="font-weight: bold;">--</span>
+      </div>
+      <div class="receipt-meta-row">
+        <span>ชื่อลูกค้า:</span>
+        <span id="receipt-customer">--</span>
+      </div>
+      <div class="receipt-meta-row">
+        <span>การชำระเงิน:</span>
+        <span id="receipt-payment">--</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Items Table -->
+    <table class="receipt-items">
+      <thead>
+        <tr>
+          <th style="width: 60%;">รายการ</th>
+          <th style="width: 15%; text-align: center;">จำนวน</th>
+          <th style="width: 25%; text-align: right;">ราคา</th>
+        </tr>
+      </thead>
+      <tbody id="receipt-items-body">
+        <!-- Dynamic row creation -->
+      </tbody>
+    </table>
+
+    <div class="divider"></div>
+
+    <!-- Calculations -->
+    <div class="receipt-totals">
+      <div class="totals-row">
+        <span>ราคาอาหารรวม:</span>
+        <span id="receipt-subtotal">0 ฿</span>
+      </div>
+      <div class="totals-row">
+        <span>ภาษีมูลค่าเพิ่ม (7% VAT):</span>
+        <span id="receipt-tax">0 ฿</span>
+      </div>
+      <div class="totals-row grand-total">
+        <span>ยอดชำระสุทธิ:</span>
+        <span id="receipt-total">0 ฿</span>
+      </div>
+    </div>
+
+    <div class="receipt-footer">
+      <strong>ขอบคุณที่ใช้บริการค่ะ</strong><br>
+      อร่อยถูกใจ กดรีวิวและแชร์บอกต่อได้นะคะ<br>
+      * ใบกำกับภาษีอย่างย่อ *
+    </div>
+
+  </div>
+
+  <!-- Floating Actions (hidden during print) -->
+  <div class="receipt-actions" id="receipt-actions">
+    <button class="btn-print" id="print-btn">
+      <i class="fas fa-print"></i> พิมพ์ใบเสร็จ / บันทึก PDF
+    </button>
+  </div>
+
+  <script type="module" src="assets/js/receipt.js"></script>
+</body>
+</html>

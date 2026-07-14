@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ติดตามสถานะออเดอร์ - Lumina Bite</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <i class="fas fa-utensils"></i> Lumina<span>Bite</span>
+      </a>
+      <div class="nav-actions">
+        <a href="index.html" class="btn-secondary-outline">
+          <i class="fas fa-shopping-basket"></i> สั่งอาหารเพิ่ม
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tracking Content Wrapper -->
+  <div class="tracking-wrapper" id="tracking-container">
+    <div class="tracking-card fade-in">
+      <span style="font-size: 48px; color: var(--primary); display: block; margin-bottom: 16px;">🛵</span>
+      <h2 style="font-size: 24px; margin-bottom: 8px;">ติดตามสถานะออเดอร์ของคุณ</h2>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">ระบบจะอัปเดตสถานะการปรุงอาหารให้คุณทราบแบบเรียลไทม์</p>
+      
+      <span class="tracking-order-id" id="order-id-text">ORD-XXXXXX</span>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; max-width: 400px; margin: 20px auto; background: var(--bg-main); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border); font-size: 14px;">
+        <div><strong>โต๊ะ/ที่รับอาหาร:</strong></div>
+        <div id="table-number-text">...</div>
+        <div><strong>เวลาสั่งซื้อ:</strong></div>
+        <div id="tracking-time">...</div>
+        <div><strong>ยอดชำระสุทธิ:</strong></div>
+        <div id="total-price-text" style="color: var(--primary); font-weight: 700;">0 ฿</div>
+      </div>
+
+      <!-- Realtime Timeline -->
+      <div class="timeline">
+        <div class="timeline-progress-line" id="progress-line" style="height: 0%;"></div>
+        
+        <!-- Step 1 -->
+        <div class="timeline-step" id="step-pending">
+          <div class="timeline-icon"><i class="fas fa-receipt"></i></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">รับออเดอร์แล้ว</h3>
+            <p class="timeline-desc">รอคิวปรุงอาหารจากทางเชฟ</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="timeline-step" id="step-preparing">
+          <div class="timeline-icon"><i class="fas fa-fire-burner"></i></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">กำลังปรุงอาหาร</h3>
+            <p class="timeline-desc">พ่อครัวกำลังจัดเตรียมและทำเมนูของคุณอย่างพิถีพิถัน</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="timeline-step" id="step-ready">
+          <div class="timeline-icon"><i class="fas fa-bell"></i></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">อาหารพร้อมเสิร์ฟ</h3>
+            <p class="timeline-desc">ปรุงอาหารเสร็จแล้ว พนักงานกำลังนำไปเสิร์ฟที่โต๊ะของคุณ</p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="timeline-step" id="step-completed">
+          <div class="timeline-icon"><i class="fas fa-circle-check"></i></div>
+          <div class="timeline-content">
+            <h3 class="timeline-title">ออเดอร์เสร็จสิ้น</h3>
+            <p class="timeline-desc">เสิร์ฟอาหารและชำระเงินเรียบร้อยแล้ว ทานให้อร่อยนะคะ!</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 32px; display: flex; justify-content: center; gap: 16px;">
+        <a href="" target="_blank" class="btn-secondary-outline" id="receipt-link">
+          <i class="fas fa-print"></i> ดูใบเสร็จรับเงิน
+        </a>
+        <a href="index.html" class="btn-checkout" style="margin: 0; padding: 10px 24px; font-size: 14px;">
+          กลับไปหน้าเมนู
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-text">
+        &copy; 2026 Lumina Bite Restaurant. (Real-time Order Tracker)
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="assets/js/tracking.js"></script>
+</body>
+</html>
